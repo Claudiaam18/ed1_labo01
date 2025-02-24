@@ -1,17 +1,34 @@
 package ed.lab;
 
 public class Main {
-    private static final ArrayGenerator<Integer> sortedArrayGenerator = null; // Reemplácelo por una función lambda
+    private static final ArrayGenerator<Integer> sortedArrayGenerator = (size) -> {
+        Integer[] array = new Integer[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = i;
+        }
+        return array;
+    };
 
-    private static final ArrayGenerator<Integer> invertedArrayGenerator = null; // Reemplácelo por una función lambda
+    private static final ArrayGenerator<Integer> invertedArrayGenerator = (size) -> {
+        Integer[] array = new Integer[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = size - i - 1;
+        }
+        return array;
+    };
 
-    private static final ArrayGenerator<Integer> randomArrayGenerator = null; // Reemplácelo por una función lambda
+    private static final ArrayGenerator<Integer> randomArrayGenerator = (size) -> {
+        Integer[] array = new Integer[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = (int) (Math.random() * size);
+        }
+        return array;
+    };
 
-    private static final QuickSort<Integer> highPivotQuickSort = null; // Reemplácelo por una referencia a un método
+    private static final QuickSort<Integer> highPivotQuickSort = SortingAlgorithms::sortWithHighPivot;
+    private static final QuickSort<Integer> lowPivotQuickSort = SortingAlgorithms::sortWithLowPivot;
+    private static final QuickSort<Integer> randomPivotQuickSort = SortingAlgorithms::sortWithRandomPivot;
 
-    private static final QuickSort<Integer> lowPivotQuickSort = null; // Reemplácelo por una referencia a un método
-
-    private static final QuickSort<Integer> randomPivotQuickSort = null; // Reemplácelo por una referencia a un método
 
     public static QuickSort<Integer> getHighPivotQuickSort() {
         return highPivotQuickSort;
@@ -66,5 +83,54 @@ public class Main {
         System.out.println("\tUtilizando un elemento aleatorio como pivote: ");
         tester.testSorting(randomArrayGenerator, randomPivotQuickSort);
         System.out.println("================================");
+    }
+}
+
+class SortingAlgorithms {
+    public static <T extends Comparable<T>> void sortWithHighPivot(T[] array) {
+        quickSort(array, 0, array.length - 1, "high");
+    }
+
+    public static <T extends Comparable<T>> void sortWithLowPivot(T[] array) {
+        quickSort(array, 0, array.length - 1, "low");
+    }
+
+    public static <T extends Comparable<T>> void sortWithRandomPivot(T[] array) {
+        quickSort(array, 0, array.length - 1, "random");
+    }
+
+    private static <T extends Comparable<T>> void quickSort(T[] array, int low, int high, String pivotType) {
+        if (low < high) {
+            int pi = partition(array, low, high, pivotType);
+            quickSort(array, low, pi - 1, pivotType);
+            quickSort(array, pi + 1, high, pivotType);
+        }
+    }
+
+    private static <T extends Comparable<T>> int partition(T[] array, int low, int high, String pivotType) {
+        int pivotIndex = switch (pivotType) {
+            case "low" -> low;
+            case "random" -> low + (int) (Math.random() * (high - low + 1));
+            default -> high;
+        };
+
+        T pivot = array[pivotIndex];
+        swap(array, pivotIndex, high);
+        int i = low - 1;
+
+        for (int j = low; j < high; j++) {
+            if (array[j].compareTo(pivot) <= 0) {
+                i++;
+                swap(array, i, j);
+            }
+        }
+        swap(array, i + 1, high);
+        return i + 1;
+    }
+
+    private static <T> void swap(T[] array, int i, int j) {
+        T temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
     }
 }

@@ -102,8 +102,8 @@ class SortingAlgorithms {
     private static <T extends Comparable<T>> void quickSort(T[] array, int low, int high, String pivotType) {
         if (low < high) {
             int pi = partition(array, low, high, pivotType);
-            quickSort(array, low, pi - 1, pivotType);
-            quickSort(array, pi + 1, high, pivotType);
+            if (pi > low) quickSort(array, low, pi - 1, pivotType);
+            if (pi < high) quickSort(array, pi + 1, high, pivotType);
         }
     }
 
@@ -116,16 +116,16 @@ class SortingAlgorithms {
 
         T pivot = array[pivotIndex];
         swap(array, pivotIndex, high);
-        int i = low - 1;
+        int i = low;
 
         for (int j = low; j < high; j++) {
-            if (array[j].compareTo(pivot) <= 0) {
-                i++;
+            if (array[j].compareTo(pivot) < 0) {
                 swap(array, i, j);
+                i++;
             }
         }
-        swap(array, i + 1, high);
-        return i + 1;
+        swap(array, i, high);
+        return i;
     }
 
     private static <T> void swap(T[] array, int i, int j) {

@@ -1,5 +1,3 @@
-//
-
 package ed.lab;
 
 import java.time.Duration;
@@ -37,7 +35,8 @@ public class SortingTester<T extends Comparable<T>> {
                 .mapToLong(Duration::toMillis)
                 .sum();
 
-        System.out.printf("\t\tTiempo promedio: %.2f ms\n", average);
+
+        System.out.printf("\t\tTiempo promedio: %s ms\n", average);
         System.out.printf("\t\tTiempo total: %d ms\n", totalDuration);
     }
 }

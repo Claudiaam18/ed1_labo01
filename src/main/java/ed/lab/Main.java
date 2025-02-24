@@ -25,7 +25,7 @@ public class Main {
         return array;
     };
 
-    class SortingAlgorithms {
+    static class SortingAlgorithms {
         public static <T extends Comparable<T>> void sortWithHighPivot(T[] array) {
             quickSort(array, 0, array.length - 1, "high");
         }

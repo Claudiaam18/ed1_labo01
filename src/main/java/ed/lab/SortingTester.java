@@ -19,24 +19,23 @@ public class SortingTester<T extends Comparable<T>> {
             T[] copy = Arrays.copyOf(array, array.length);
 
             final LocalDateTime start = LocalDateTime.now();
-
             quickSort.sort(copy);
-
             final LocalDateTime end = LocalDateTime.now();
+
             durations.add(Duration.between(start, end));
+
         }
 
         double average = durations.stream()
-                .mapToLong(Duration::toMillis)
+                .mapToLong(Duration::toNanos)  // <-- Usar nanosegundos para mayor precisión
                 .average()
-                .orElse(0);
+                .orElse(0) / 1_000_000.0; // Convertir a milisegundos
 
         long totalDuration = durations.stream()
-                .mapToLong(Duration::toMillis)
-                .sum();
+                .mapToLong(Duration::toNanos)
+                .sum() / 1_000_000; // Convertir a milisegundos
 
-
-        System.out.printf("\t\tTiempo promedio: %s ms\n", average);
+        System.out.printf("\t\tTiempo promedio: %.3f ms\n", average);
         System.out.printf("\t\tTiempo total: %d ms\n", totalDuration);
     }
 }

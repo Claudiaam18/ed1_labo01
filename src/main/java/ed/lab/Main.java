@@ -41,8 +41,8 @@ public class Main {
         private static <T extends Comparable<T>> void quickSort(T[] array, int low, int high, String pivotType) {
             if (low < high) {
                 int pi = partition(array, low, high, pivotType);
-                if (pi > low) quickSort(array, low, pi - 1, pivotType);
-                if (pi < high) quickSort(array, pi + 1, high, pivotType);
+                quickSort(array, low, pi - 1, pivotType);
+                quickSort(array, pi + 1, high, pivotType);
             }
         }
 
@@ -68,16 +68,17 @@ public class Main {
         }
 
         private static <T> void swap(T[] array, int i, int j) {
-            T temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
+            if (i != j) {
+                T temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
         }
     }
 
     private static final QuickSort<Integer> highPivotQuickSort = SortingAlgorithms::sortWithHighPivot;
     private static final QuickSort<Integer> lowPivotQuickSort = SortingAlgorithms::sortWithLowPivot;
     private static final QuickSort<Integer> randomPivotQuickSort = SortingAlgorithms::sortWithRandomPivot;
-
 
     public static QuickSort<Integer> getHighPivotQuickSort() {
         return highPivotQuickSort;
@@ -108,29 +109,43 @@ public class Main {
 
         System.out.println("Ordenando un arreglo ordenado:");
         System.out.println("\tUtilizando el último elemento como pivote: ");
-        tester.testSorting(sortedArrayGenerator, highPivotQuickSort);
+        measureTime(sortedArrayGenerator, highPivotQuickSort);
         System.out.println("\tUtilizando el primer elemento como pivote: ");
-        tester.testSorting(sortedArrayGenerator, lowPivotQuickSort);
+        measureTime(sortedArrayGenerator, lowPivotQuickSort);
         System.out.println("\tUtilizando un elemento aleatorio como pivote: ");
-        tester.testSorting(sortedArrayGenerator, randomPivotQuickSort);
+        measureTime(sortedArrayGenerator, randomPivotQuickSort);
         System.out.println("================================");
 
         System.out.println("Ordenando un arreglo invertido:");
         System.out.println("\tUtilizando el último elemento como pivote: ");
-        tester.testSorting(invertedArrayGenerator, highPivotQuickSort);
+        measureTime(invertedArrayGenerator, highPivotQuickSort);
         System.out.println("\tUtilizando el primer elemento como pivote: ");
-        tester.testSorting(invertedArrayGenerator, lowPivotQuickSort);
+        measureTime(invertedArrayGenerator, lowPivotQuickSort);
         System.out.println("\tUtilizando un elemento aleatorio como pivote: ");
-        tester.testSorting(invertedArrayGenerator, randomPivotQuickSort);
+        measureTime(invertedArrayGenerator, randomPivotQuickSort);
         System.out.println("================================");
 
         System.out.println("Ordenando un arreglo aleatorio:");
         System.out.println("\tUtilizando el último elemento como pivote: ");
-        tester.testSorting(randomArrayGenerator, highPivotQuickSort);
+        measureTime(randomArrayGenerator, highPivotQuickSort);
         System.out.println("\tUtilizando el primer elemento como pivote: ");
-        tester.testSorting(randomArrayGenerator, lowPivotQuickSort);
+        measureTime(randomArrayGenerator, lowPivotQuickSort);
         System.out.println("\tUtilizando un elemento aleatorio como pivote: ");
-        tester.testSorting(randomArrayGenerator, randomPivotQuickSort);
+        measureTime(randomArrayGenerator, randomPivotQuickSort);
         System.out.println("================================");
+    }
+
+    private static void measureTime(ArrayGenerator<Integer> arrayGenerator, QuickSort<Integer> quickSort) {
+        int size = 1000;  // Tamaño del arreglo de prueba
+        Integer[] array = arrayGenerator.generate(size);
+
+        // Medir el tiempo de ejecución
+        long startTime = System.nanoTime();
+        quickSort.sort(array);
+        long endTime = System.nanoTime();
+
+        // Calcular la duración en milisegundos
+        long duration = (endTime - startTime) / 1000000;  // Convertir a milisegundos
+        System.out.println("\tTiempo de ejecución: " + duration + " ms");
     }
 }

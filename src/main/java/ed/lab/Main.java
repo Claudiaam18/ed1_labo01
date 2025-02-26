@@ -1,44 +1,44 @@
 package ed.lab;
 
 public class Main {
-    private static final ArrayGenerator<Integer> sortedArrayGenerator = (size) -> {
-        Integer[] array = new Integer[size];
+    private static final ArrayGenerator<String> sortedArrayGenerator = (size) -> {
+        String[] array = new String[size];
         for (int i = 0; i < size; i++) {
-            array[i] = i;
+            array[i] = String.format("%05d", i); // Convertir números a strings con formato fijo
         }
         return array;
     };
 
-    private static final ArrayGenerator<Integer> invertedArrayGenerator = (size) -> {
-        Integer[] array = new Integer[size];
+    private static final ArrayGenerator<String> invertedArrayGenerator = (size) -> {
+        String[] array = new String[size];
         for (int i = 0; i < size; i++) {
-            array[i] = size - i - 1;
+            array[i] = String.format("%05d", size - i - 1);
         }
         return array;
     };
 
-    private static final ArrayGenerator<Integer> randomArrayGenerator = (size) -> {
-        Integer[] array = new Integer[size];
+    private static final ArrayGenerator<String> randomArrayGenerator = (size) -> {
+        String[] array = new String[size];
         for (int i = 0; i < size; i++) {
-            array[i] = (int) (Math.random() * size);
+            array[i] = String.format("%05d", (int) (Math.random() * size));
         }
         return array;
     };
 
     static class SortingAlgorithms {
-        public static <T extends Comparable<T>> void sortWithHighPivot(T[] array) {
+        public static void sortWithHighPivot(String[] array) {
             quickSort(array, 0, array.length - 1, "high");
         }
 
-        public static <T extends Comparable<T>> void sortWithLowPivot(T[] array) {
+        public static void sortWithLowPivot(String[] array) {
             quickSort(array, 0, array.length - 1, "low");
         }
 
-        public static <T extends Comparable<T>> void sortWithRandomPivot(T[] array) {
+        public static void sortWithRandomPivot(String[] array) {
             quickSort(array, 0, array.length - 1, "random");
         }
 
-        private static <T extends Comparable<T>> void quickSort(T[] array, int low, int high, String pivotType) {
+        private static void quickSort(String[] array, int low, int high, String pivotType) {
             if (low < high) {
                 int pi = partition(array, low, high, pivotType);
                 quickSort(array, low, pi - 1, pivotType);
@@ -46,14 +46,14 @@ public class Main {
             }
         }
 
-        private static <T extends Comparable<T>> int partition(T[] array, int low, int high, String pivotType) {
+        private static int partition(String[] array, int low, int high, String pivotType) {
             int pivotIndex = switch (pivotType) {
                 case "low" -> low;
                 case "random" -> low + (int) (Math.random() * (high - low + 1));
                 default -> high;
             };
 
-            T pivot = array[pivotIndex];
+            String pivot = array[pivotIndex];
             swap(array, pivotIndex, high);
             int i = low;
 
@@ -67,45 +67,45 @@ public class Main {
             return i;
         }
 
-        private static <T> void swap(T[] array, int i, int j) {
+        private static void swap(String[] array, int i, int j) {
             if (i != j) {
-                T temp = array[i];
+                String temp = array[i];
                 array[i] = array[j];
                 array[j] = temp;
             }
         }
     }
 
-    private static final QuickSort<Integer> highPivotQuickSort = SortingAlgorithms::sortWithHighPivot;
-    private static final QuickSort<Integer> lowPivotQuickSort = SortingAlgorithms::sortWithLowPivot;
-    private static final QuickSort<Integer> randomPivotQuickSort = SortingAlgorithms::sortWithRandomPivot;
+    private static final QuickSort<String> highPivotQuickSort = SortingAlgorithms::sortWithHighPivot;
+    private static final QuickSort<String> lowPivotQuickSort = SortingAlgorithms::sortWithLowPivot;
+    private static final QuickSort<String> randomPivotQuickSort = SortingAlgorithms::sortWithRandomPivot;
 
-    public static QuickSort<Integer> getHighPivotQuickSort() {
+    public static QuickSort<String> getHighPivotQuickSort() {
         return highPivotQuickSort;
     }
 
-    public static QuickSort<Integer> getLowPivotQuickSort() {
+    public static QuickSort<String> getLowPivotQuickSort() {
         return lowPivotQuickSort;
     }
 
-    public static QuickSort<Integer> getRandomPivotQuickSort() {
+    public static QuickSort<String> getRandomPivotQuickSort() {
         return randomPivotQuickSort;
     }
 
-    public static ArrayGenerator<Integer> getSortedArrayGenerator() {
+    public static ArrayGenerator<String> getSortedArrayGenerator() {
         return sortedArrayGenerator;
     }
 
-    public static ArrayGenerator<Integer> getInvertedArrayGenerator() {
+    public static ArrayGenerator<String> getInvertedArrayGenerator() {
         return invertedArrayGenerator;
     }
 
-    public static ArrayGenerator<Integer> getRandomArrayGenerator() {
+    public static ArrayGenerator<String> getRandomArrayGenerator() {
         return randomArrayGenerator;
     }
 
     public static void main(String[] args) {
-        final SortingTester<Integer> tester = new SortingTester<>();
+        final SortingTester<String> tester = new SortingTester<>();
 
         System.out.println("Ordenando un arreglo ordenado:");
         System.out.println("\tUtilizando el último elemento como pivote: ");
@@ -135,17 +135,15 @@ public class Main {
         System.out.println("================================");
     }
 
-    private static void measureTime(ArrayGenerator<Integer> arrayGenerator, QuickSort<Integer> quickSort) {
-        int size = 1000;  // Tamaño del arreglo de prueba
-        Integer[] array = arrayGenerator.generate(size);
+    private static void measureTime(ArrayGenerator<String> arrayGenerator, QuickSort<String> quickSort) {
+        int size = 1000;
+        String[] array = arrayGenerator.generate(size);
 
-        // Medir el tiempo de ejecución
         long startTime = System.nanoTime();
         quickSort.sort(array);
         long endTime = System.nanoTime();
 
-        // Calcular la duración en milisegundos
-        long duration = (endTime - startTime) / 1000000;  // Convertir a milisegundos
+        long duration = (endTime - startTime) / 1_000_000;
         System.out.println("\tTiempo de ejecución: " + duration + " ms");
     }
 }

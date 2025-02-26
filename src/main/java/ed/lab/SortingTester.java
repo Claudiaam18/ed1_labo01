@@ -23,17 +23,16 @@ public class SortingTester<T extends Comparable<T>> {
             final LocalDateTime end = LocalDateTime.now();
 
             durations.add(Duration.between(start, end));
-
         }
 
         double average = durations.stream()
-                .mapToLong(Duration::toNanos)  // <-- Usar nanosegundos para mayor precisión
+                .mapToLong(Duration::toNanos)
                 .average()
-                .orElse(0) / 1_000_000.0; // Convertir a milisegundos
+                .orElse(0) / 1_000_000.0;
 
         long totalDuration = durations.stream()
                 .mapToLong(Duration::toNanos)
-                .sum() / 1_000_000; // Convertir a milisegundos
+                .sum() / 1_000_000;
 
         System.out.printf("\t\tTiempo promedio: %.3f ms\n", average);
         System.out.printf("\t\tTiempo total: %d ms\n", totalDuration);
